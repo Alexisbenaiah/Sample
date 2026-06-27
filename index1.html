@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sweet Date Planner 💖</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background: linear-gradient(135deg,#ff9a9e,#fad0c4,#a18cd1,#fbc2eb);
+    background-size:400% 400%;
+    animation: bg 12s ease infinite;
+}
+
+@keyframes bg{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+.container{
+    background: rgba(255,255,255,0.92);
+    padding:20px;
+    border-radius:20px;
+    width:340px;
+    text-align:center;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+    position:relative;
+}
+
+h2{
+    margin:10px 0;
+}
+
+input{
+    width:90%;
+    padding:10px;
+    margin:6px 0;
+    border-radius:10px;
+    border:1px solid #ccc;
+}
+
+button{
+    padding:10px 12px;
+    margin:6px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:14px;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+
+/* Buttons */
+#startBtn{
+    background:#ff4d6d;
+    color:white;
+}
+
+#homeBtn{
+    background:#6c63ff;
+    color:white;
+    display:none;
+}
+
+.placeBtn{
+    background:#28a745;
+    color:white;
+    width:90%;
+    display:block;
+    margin:6px auto;
+}
+
+/* screens */
+#survey, #result, #places{
+    display:none;
+}
+
+.bar{
+    width:100%;
+    height:8px;
+    background:#eee;
+    border-radius:20px;
+    overflow:hidden;
+    margin:10px 0;
+}
+
+.bar-fill{
+    height:100%;
+    width:0%;
+    background:#ff4d6d;
+    transition:0.3s;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>💖 Date Planner</h2>
+
+    <button id="homeBtn">🏠 Home</button>
+
+    <!-- HOME -->
+    <div id="home">
+        <input type="text" id="name" placeholder="Your Name 💕">
+        <input type="text" id="avail" placeholder="Kailan ka free?">
+        <button id="startBtn">Start 💌</button>
+    </div>
+
+    <!-- SURVEY -->
+    <div id="survey">
+        <div class="bar">
+            <div class="bar-fill" id="bar"></div>
+        </div>
+
+        <p id="question">Question</p>
+
+        <button id="yes">Oo ❤️</button>
+        <button id="no">Hindi 😅</button>
+    </div>
+
+    <!-- PLACE SUGGESTIONS -->
+    <div id="places">
+        <h3>💖 Suggested Date Spots</h3>
+
+        <button class="placeBtn">🍔 Food Trip (SM / Mall date)</button>
+        <button class="placeBtn">☕ Coffee Shop Chill</button>
+        <button class="placeBtn">🎬 Movie Date</button>
+        <button class="placeBtn">🌳 Park Walk + Talk</button>
+        <button class="placeBtn">🍦 Dessert / Ice Cream Date</button>
+    </div>
+
+    <!-- RESULT -->
+    <div id="result">
+        <h2 id="finalText"></h2>
+        <p>See you soon 💌</p>
+    </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+    const questions = [
+        "Mahilig ka ba lumabas? 😊",
+        "Coffee date person ka ba? ☕",
+        "Gusto mo ba ng spontaneous gala? 🚗",
+        "Ready ka ba sa fun date? 💖"
+    ];
+
+    let step = 0;
+    let name = "";
+    let avail = "";
+
+    const home = document.getElementById("home");
+    const survey = document.getElementById("survey");
+    const places = document.getElementById("places");
+    const result = document.getElementById("result");
+
+    const startBtn = document.getElementById("startBtn");
+    const homeBtn = document.getElementById("homeBtn");
+
+    const question = document.getElementById("question");
+    const bar = document.getElementById("bar");
+
+    const yesBtn = document.getElementById("yes");
+    const noBtn = document.getElementById("no");
+
+    function goHome(){
+        home.style.display = "block";
+        survey.style.display = "none";
+        places.style.display = "none";
+        result.style.display = "none";
+        homeBtn.style.display = "none";
+        step = 0;
+    }
+
+    function showQuestion(){
+        question.innerText = questions[step];
+        bar.style.width = ((step + 1) / questions.length) * 100 + "%";
+    }
+
+    startBtn.onclick = function(){
+        name = document.getElementById("name").value || "You";
+        avail = document.getElementById("avail").value || "anytime";
+
+        home.style.display = "none";
+        survey.style.display = "block";
+        homeBtn.style.display = "inline-block";
+
+        showQuestion();
+    };
+
+    yesBtn.onclick = function(){
+        step++;
+
+        if(step < questions.length){
+            showQuestion();
+        } else {
+            survey.style.display = "none";
+            places.style.display = "block";
+        }
+    };
+
+    noBtn.onmouseover = function(){
+        const box = document.querySelector(".container");
+
+        const maxX = box.clientWidth - noBtn.clientWidth - 20;
+        const maxY = box.clientHeight - noBtn.clientHeight - 20;
+
+        noBtn.style.position = "absolute";
+        noBtn.style.left = Math.random() * maxX + "px";
+        noBtn.style.top = Math.random() * maxY + "px";
+    };
+
+    homeBtn.onclick = goHome;
+
+    // place buttons click
+    document.querySelectorAll(".placeBtn").forEach(btn=>{
+        btn.onclick = function(){
+            places.style.display = "none";
+            result.style.display = "block";
+
+            document.getElementById("finalText").innerText =
+                `💖 Hi ${name}! Date planned sa ${avail} 😄`;
+        };
+    });
+
+});
+</script>
+
+</body>
+</html>
